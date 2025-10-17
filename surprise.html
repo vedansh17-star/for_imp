@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated QR Message</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+
+    #animated-text {
+      font-family: 'Pacifico', cursive;
+      font-size: 26px;
+      max-width: 600px;
+      line-height: 1.6;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    #qr-container {
+      display: none; /* hidden until generated */
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    /* Sparkle animation */
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); opacity: 0.8; }
+      50% { opacity: 0.2; }
+      100% { transform: translateY(-800px) translateX(50px); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="animated-text"></div>
+  <div id="qr-container"></div>
+  <audio id="guitar-music" loop>
+    <source src="soft-guitar.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    const animatedText = document.getElementById('animated-text');
+    const qrContainer = document.getElementById('qr-container');
+    const guitar = document.getElementById('guitar-music');
+
+    // Play music
+    guitar.play();
+
+    // Full paragraph message
+    const message = "Hey! Just wanted to say your presence makes every day brighter. You've made me smile today… and every day. Every little thing you do makes me grateful… thank you for being amazing. Vedansh says: You’re wonderful, never forget that! 💖";
+
+    // Animate text letter by letter
+    let index = 0;
+    function animateText() {
+      if(index <= message.length){
+        animatedText.textContent = message.slice(0, index);
+        animatedText.style.opacity = 1;
+        index++;
+        setTimeout(animateText, 50);
+      } else {
+        // Generate QR code after text animation
+        QRCode.toCanvas(qrContainer, message, {width: 200}, function(error){
+          if(error) console.error(error);
+          qrContainer.style.display = 'block';
+        });
+      }
+    }
+    animateText();
+
+    // Create floating sparkles
+    for(let i=0; i<50; i++){
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+      sparkle.style.left = Math.random() * window.innerWidth + 'px';
+      sparkle.style.top = Math.random() * window.innerHeight + 'px';
+      sparkle.style.animationDuration = 4 + Math.random() * 4 + 's';
+      sparkle.style.width = sparkle.style.height = 2 + Math.random()*4 + 'px';
+      document.body.appendChild(sparkle);
+    }
+  </script>
+
+</body>
+</html>
